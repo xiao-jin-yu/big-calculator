@@ -1,9 +1,7 @@
 import Decimal from "decimal.js";
-import JSBI from "jsbi";
-console.log('JSBI: ', JSBI);
 
 const bigNumberFormat = (num: string = "") => {
-  const numStr = JSBI.BigInt(num);
+  const numStr = BigInt(num);
   return numStr;
 };
 
@@ -55,18 +53,15 @@ const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
 };
 
 /* 输出结果 */
-const resultNum = (
-  numInt: string = "",
-  numDecimal: string = "",
-  digit: number = 2
-) =>
-  `${numInt}${numDecimal !== "0" ? `.${numDecimal.substring(0, digit)}` : ""}`;
+
+const resultNum = (numInt: string, numDecimal: string, digit: number) =>
+  `${numInt}${numDecimal !== "0" && digit !== 0 ? `.${zeroFill(numDecimal,digit - numDecimal.length).substring(0, digit)}` : ""}`;
 
 /* 加 */
 const bigAdd = (
   numOne: string = "",
   numTwo: string = "",
-  digit: number = 2
+  digit: number = 0
 ) => {
   if (!checkNum(numOne) || !checkNum(numTwo)) {
     console.error("请输入正确数字字符串");
@@ -108,7 +103,7 @@ const bigAdd = (
 const bigSub = (
   numOne: string = "",
   numTwo: string = "",
-  digit: number = 2
+  digit: number = 0
 ) => {
   if (!checkNum(numOne) || !checkNum(numTwo)) {
     console.error("请输入正确数字字符串");
@@ -174,7 +169,7 @@ const bigSub = (
 const bigMul = (
   numOne: string = "",
   numTwo: string = "",
-  digit: number = 2
+  digit: number = 0
 ) => {
   if (!checkNum(numOne) || !checkNum(numTwo)) {
     console.error("请输入正确数字字符串");
@@ -187,8 +182,8 @@ const bigMul = (
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
   const length = numOneDecimal.length + numTwoDecimal.length;
-  const numInt = mulStr.slice(0, mulStr.length - length);
-  const numDecimal = mulStr.slice(length, mulStr.length);
+  const numInt = mulStr.length - length === 0 ?  '0' : mulStr.substring(0, mulStr.length - length);
+  const numDecimal = mulStr.substring(mulStr.length - length, mulStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
 
@@ -196,7 +191,7 @@ const bigMul = (
 const bigDiv = (
   numOne: string = "",
   numTwo: string = "",
-  digit: number = 2
+  digit: number = 0
 ) => {
   if (!checkNum(numOne) || !checkNum(numTwo)) {
     console.error("请输入正确数字字符串");
@@ -211,7 +206,6 @@ const bigDiv = (
   const [floatInt, floatDecimal] = new Decimal(Number(numRemainder))
     .div(new Decimal(Number(bigNumberFormat(numTwoInt + numTwoDecimal))))
     .toNumber()
-    .toFixed(digit)
     .toString()
     .split(".");
   const numDecimal = floatDecimal;
@@ -223,4 +217,6 @@ const bigDiv = (
   return resultNum(numInt, numDecimal, digit);
 };
 
+const MaxBigDecimal = { bigAdd, bigSub, bigMul, bigDiv };
 export { bigAdd, bigSub, bigMul, bigDiv };
+export default MaxBigDecimal;
