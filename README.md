@@ -1,8 +1,7 @@
 # max-big-decimal
 
+max-big-decimal 是基于 ES2020 新增的基础数据类型 BigInt 及 [decimal.js](https://github.com/MikeMcl/decimal.js) 进行超大整数/小数计算简单工具函数。
 ---
-
-max-big-decimal 是基于 ES2020 新增的基础数据类型 BigInt 及 decimal.js 进行超大整数/小数计算简单工具函数。
 
 ### 安装
 
@@ -44,7 +43,7 @@ const mulNum = bigMul("99984412349.222", "99989419.4566");
 const divNum = bigDiv("0.45565213424511", "0.12121341234234");
 // -> 3
 ```
-
+---
 
 ### 精度
 加减乘除默认精度为0，最大精度为16,会自动截取或补零
@@ -54,5 +53,19 @@ const addNum = bigAdd("1115321211.9982054", "1398415615111.28", 6);
 // -> 1399530936323.278205
 const subNum = bigSub("1.3", "0.1",4);
 // -> 1.2000
+```
+---
+### 比较
+```
+console.log(bigCompare("123123.999", "123123.999", "==="))
+// -> true
+console.log(bigCompare("123123.999", "123123.999", "<"))
+// -> false
+console.log(bigCompare("123123.999", "123123.999", ">"))
+// -> false
+console.log(bigCompare("123123.999", "123123.999", "<="))
+// -> true
+console.log(bigCompare("123123.999", "123123.999", ">="))
+// -> true
 ```
 
