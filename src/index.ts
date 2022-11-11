@@ -55,10 +55,17 @@ const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
 /* 输出结果 */
 
 const resultNum = (numInt: string, numDecimal: string, digit: number) =>
-  `${numInt}${numDecimal !== "0" && digit !== 0 ? `.${zeroFill(numDecimal,digit - numDecimal.length).substring(0, digit)}` : ""}`;
+  `${numInt}${
+    numDecimal !== "0" && digit !== 0
+      ? `.${zeroFill(numDecimal, digit - numDecimal.length).substring(
+          0,
+          digit
+        )}`
+      : ""
+  }`;
 
 /* 加 */
-const bigAdd = (
+export const bigAdd = (
   numOne: string = "",
   numTwo: string = "",
   digit: number = 0
@@ -100,7 +107,7 @@ const bigAdd = (
 };
 
 /* 减 */
-const bigSub = (
+export const bigSub = (
   numOne: string = "",
   numTwo: string = "",
   digit: number = 0
@@ -166,7 +173,7 @@ const bigSub = (
 };
 
 /* 乘 */
-const bigMul = (
+export const bigMul = (
   numOne: string = "",
   numTwo: string = "",
   digit: number = 0
@@ -182,13 +189,16 @@ const bigMul = (
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
   const length = numOneDecimal.length + numTwoDecimal.length;
-  const numInt = mulStr.length - length === 0 ?  '0' : mulStr.substring(0, mulStr.length - length);
+  const numInt =
+    mulStr.length - length === 0
+      ? "0"
+      : mulStr.substring(0, mulStr.length - length);
   const numDecimal = mulStr.substring(mulStr.length - length, mulStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
 
 /* 除 */
-const bigDiv = (
+export const bigDiv = (
   numOne: string = "",
   numTwo: string = "",
   digit: number = 0
@@ -217,6 +227,56 @@ const bigDiv = (
   return resultNum(numInt, numDecimal, digit);
 };
 
-const MaxBigDecimal = { bigAdd, bigSub, bigMul, bigDiv };
-export { bigAdd, bigSub, bigMul, bigDiv };
+/* 比较 */
+export const bigCompare = (
+  numOne: string = "",
+  numTwo: string = "",
+  calc: string = "==="
+) => {
+  if (!checkNum(numOne) || !checkNum(numTwo)) {
+    console.error("请输入正确数字字符串");
+    return null;
+  }
+  const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
+    digitLengthComparison(numOne, numTwo);
+  const compare: any = {
+    "===": (a: BigInt, b: BigInt) => a === b,
+    "<": (a: BigInt, b: BigInt) => a < b,
+    ">": (a: BigInt, b: BigInt) => a > b,
+  };
+  let isCompare = false;
+  /* 等于 */
+  if (calc === "===" || calc === "<=" || calc === ">=") {
+    isCompare =
+      compare["==="](bigNumberFormat(numOneInt), bigNumberFormat(numTwoInt)) &&
+      compare["==="](
+        bigNumberFormat(numOneDecimal),
+        bigNumberFormat(numTwoDecimal)
+      );
+  }
+  /* 小于等于 */
+  if ((!isCompare && calc === "<=") || calc === "<") {
+    isCompare =
+      compare["<"](bigNumberFormat(numOneInt), bigNumberFormat(numTwoInt)) ||
+      (compare["==="](bigNumberFormat(numOneInt), bigNumberFormat(numTwoInt)) &&
+        compare["<"](
+          bigNumberFormat(numOneDecimal),
+          bigNumberFormat(numTwoDecimal)
+        ));
+  }
+  /* 大于等于 */
+  if ((!isCompare && calc === ">=") || calc === ">") {
+    isCompare =
+      compare[">"](bigNumberFormat(numOneInt), bigNumberFormat(numTwoInt)) ||
+      (compare["==="](bigNumberFormat(numOneInt), bigNumberFormat(numTwoInt)) &&
+        compare[">"](
+          bigNumberFormat(numOneDecimal),
+          bigNumberFormat(numTwoDecimal)
+        ));
+  }
+
+  return isCompare;
+};
+
+const MaxBigDecimal = { bigAdd, bigSub, bigMul, bigDiv, bigCompare };
 export default MaxBigDecimal;
