@@ -1,4 +1,4 @@
-import { bigAdd, bigSub, bigMul, bigDiv, bigCompare } from "../src/index";
+import { bigAdd, bigSub, bigMul, bigDiv, bigCompare,bigCalc } from "../src/index";
 
 describe("计算函数测试", () => {
   test("是否正确相加", () => {
@@ -39,5 +39,9 @@ describe("计算函数测试", () => {
 
   test("是否大于等于", () => {
     expect(bigCompare("9123123.999", "123123.999", ">=")).toBe(true);
+  });
+
+  test("字符串模板计算是否正确", () => {
+    expect(bigCalc("123123.999 + 123123.999 - 25451.34 * 5415418.44 / 96342")).toBe('-1184380.9692075481098587');
   });
 });

@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import StrCalc from "./lib/StrCalc";
 
 const bigNumberFormat = (num: string = "") => {
   const numStr = BigInt(num);
@@ -225,9 +226,15 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
           bigNumberFormat(numTwoDecimal)
         ));
   }
-
   return isCompare;
 };
 
-const MaxBigDecimal = { bigAdd, bigSub, bigMul, bigDiv, bigCompare };
+/* 字符串模板计算 */
+export const bigCalc = (str: string) => {
+  const strCalc = new StrCalc(bigAdd, bigSub, bigMul, bigDiv);
+  const ast = strCalc.parse(str);
+  return strCalc.exec(ast);
+};
+
+const MaxBigDecimal = { bigAdd, bigSub, bigMul, bigDiv, bigCompare, bigCalc };
 export default MaxBigDecimal;
