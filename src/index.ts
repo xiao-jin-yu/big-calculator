@@ -75,14 +75,10 @@ const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
 
 /* 输出结果 */
 const resultNum = (numInt: string, numDecimal: string, digit: number) => {
-  /* 负数匹配 */
-  const negativeReg = /^-/g;
   /* 全0匹配 */
   const zeroReg = /^0+$/g;
   return `${numInt}${
-    zeroReg.test(numDecimal)
-      ? ""
-      : `.${numDecimal.substring(negativeReg.test(numDecimal) ? 1 : 0, digit)}`
+    zeroReg.test(numDecimal) ? "" : `.${numDecimal.substring(0, digit)}`
   }`;
 };
 
