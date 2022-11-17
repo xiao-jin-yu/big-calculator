@@ -5,8 +5,29 @@ const bigNumberFormat = (num: string = "") => {
   return numStr;
 };
 
+const transformString = (num: any) => {
+  let str = num;
+  /* 科学计数 */
+  const FEreg = /\d(?:\.(\d*))?e([+-]\d+)/;
+  if (FEreg.test(num)) {
+    str = new Decimal(num).toFixed();
+  }
+  /* bigint */
+  const isBigInt = typeof num === "bigint";
+  if (isBigInt) {
+    str = num.toString();
+  }
+  /* number */
+  const isNumber = typeof num === "number";
+  if (isNumber) {
+    str = String(num);
+  }
+  return str;
+};
+
 /* 检测输入类型 */
 const checkNum = (num: string = "") => {
+  /* 正负整数，小数 */
   const reg = /^(\-|\+)?\d+(\.\d+)?$/;
   return reg.test(num);
 };
@@ -22,7 +43,7 @@ const zeroFill = (str: string = "", length: number = 0) => {
   return zeroStr;
 };
 
-/* 输出整数，小数 */
+/* 输出整数，小数,是否交换 */
 const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
   const [numOneInt, numOneDecimal = "0"] = numOne.split(".");
   const [numTwoInt, numTwoDecimal = "0"] = numTwo.split(".");
@@ -45,170 +66,106 @@ const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
     }
   }
   return {
-    numOneInt,
+    numOneInt: numOneInt,
     numOneDecimal: numOneDecimalCopy,
-    numTwoInt,
+    numTwoInt: numTwoInt,
     numTwoDecimal: numTwoDecimalCopy,
   };
 };
 
 /* 输出结果 */
-
-const resultNum = (numInt: string, numDecimal: string, digit: number) =>
-  `${numInt}${
-    numDecimal !== "0" && digit !== 0
-      ? `.${zeroFill(numDecimal, digit - numDecimal.length).substring(
-          0,
-          digit
-        )}`
-      : ""
+const resultNum = (numInt: string, numDecimal: string, digit: number) => {
+  /* 负数匹配 */
+  const negativeReg = /^-/g;
+  /* 全0匹配 */
+  const zeroReg = /^0+$/g;
+  return `${numInt}${
+    zeroReg.test(numDecimal)
+      ? ""
+      : `.${numDecimal.substring(negativeReg.test(numDecimal) ? 1 : 0, digit)}`
   }`;
+};
 
 /* 加 */
-export const bigAdd = (
-  numOne: string = "",
-  numTwo: string = "",
-  digit: number = 0
-) => {
-  if (!checkNum(numOne) || !checkNum(numTwo)) {
+export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
+  let numOneCopy = transformString(numOne);
+  let numTwoCopy = transformString(numTwo);
+
+  if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
-    digitLengthComparison(numOne, numTwo);
-  let numInt = "";
-  let numDecimal = "";
-  const isAddOne =
-    (bigNumberFormat(numOneDecimal) + bigNumberFormat(numTwoDecimal)).toString()
-      .length > numOneDecimal.length;
-  if (isAddOne) {
-    // 截取
-    numDecimal = (
-      bigNumberFormat(numOneDecimal) + bigNumberFormat(numTwoDecimal)
-    )
-      .toString()
-      .substring(1);
-    // 进位
-    numInt = (
-      bigNumberFormat(numOneInt) +
-      bigNumberFormat(numTwoInt) +
-      bigNumberFormat("1")
-    ).toString();
-  } else {
-    numDecimal = (
-      bigNumberFormat(numOneDecimal) + bigNumberFormat(numTwoDecimal)
-    ).toString();
-    numInt = (
-      bigNumberFormat(numOneInt) + bigNumberFormat(numTwoInt)
-    ).toString();
-  }
-
+    digitLengthComparison(numOneCopy, numTwoCopy);
+  const tempStr = (
+    bigNumberFormat(numOneInt + numOneDecimal) +
+    bigNumberFormat(numTwoInt + numTwoDecimal)
+  ).toString();
+  const length = numOneDecimal.length;
+  const numInt =
+    tempStr.length - length === 0
+      ? "0"
+      : tempStr.substring(0, tempStr.length - length);
+  const numDecimal = tempStr.substring(tempStr.length - length, tempStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
 
 /* 减 */
-export const bigSub = (
-  numOne: string = "",
-  numTwo: string = "",
-  digit: number = 0
-) => {
-  if (!checkNum(numOne) || !checkNum(numTwo)) {
+export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
+  const numOneCopy = transformString(numOne);
+  const numTwoCopy = transformString(numTwo);
+  if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
-    digitLengthComparison(numOne, numTwo);
-  let numInt = "";
-  let numDecimal = "";
-  if (
-    bigNumberFormat(numOneInt) >= bigNumberFormat(numTwoInt) &&
-    bigNumberFormat(numOneDecimal) >= bigNumberFormat(numTwoDecimal)
-  ) {
-    // 整数小数皆大于/等于
-    numDecimal = (
-      bigNumberFormat(
-        zeroFill(numOneDecimal, numOneDecimal.length - numTwoDecimal.length)
-      ) - bigNumberFormat(numTwoDecimal)
-    ).toString();
-    numInt = (
-      bigNumberFormat(numOneInt) - bigNumberFormat(numTwoInt)
-    ).toString();
-  } else if (
-    bigNumberFormat(numOneInt) < bigNumberFormat(numTwoInt) &&
-    bigNumberFormat(numOneDecimal) < bigNumberFormat(numTwoDecimal)
-  ) {
-    // 整数小数皆小于
-    numDecimal = (
-      bigNumberFormat(numTwoDecimal) - bigNumberFormat(numOneDecimal)
-    ).toString();
-    numInt = `-${(
-      bigNumberFormat(numTwoInt) - bigNumberFormat(numOneInt)
-    ).toString()}`;
-  } else if (
-    bigNumberFormat(numOneInt) > bigNumberFormat(numTwoInt) &&
-    bigNumberFormat(numOneDecimal) < bigNumberFormat(numTwoDecimal)
-  ) {
-    // 整数大于等于 小数小于
-    numDecimal = (
-      bigNumberFormat(`1${numOneDecimal}`) - bigNumberFormat(numTwoDecimal)
-    ).toString();
-    numInt = (
-      bigNumberFormat(numOneInt) -
-      bigNumberFormat(numTwoInt) -
-      bigNumberFormat("1")
-    ).toString();
-  } else if (
-    bigNumberFormat(numOneInt) < bigNumberFormat(numTwoInt) &&
-    bigNumberFormat(numOneDecimal) > bigNumberFormat(numTwoDecimal)
-  ) {
-    // 整数小于等于 小数大于
-    numDecimal = (
-      bigNumberFormat(numOneDecimal) - bigNumberFormat(numTwoDecimal)
-    ).toString();
-    numInt = `-${(
-      bigNumberFormat(numTwoInt) - bigNumberFormat(numOneInt)
-    ).toString()}`;
-  }
+    digitLengthComparison(numOneCopy, numTwoCopy);
+  const tempStr = (
+    bigNumberFormat(numOneInt + numOneDecimal) -
+    bigNumberFormat(numTwoInt + numTwoDecimal)
+  ).toString();
+  const length = numOneDecimal.length;
+  const numInt =
+    tempStr.length - length === 0
+      ? "0"
+      : tempStr.substring(0, tempStr.length - length);
+  const numDecimal = tempStr.substring(tempStr.length - length, tempStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
 
 /* 乘 */
-export const bigMul = (
-  numOne: string = "",
-  numTwo: string = "",
-  digit: number = 0
-) => {
-  if (!checkNum(numOne) || !checkNum(numTwo)) {
+export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
+  const numOneCopy = transformString(numOne);
+  const numTwoCopy = transformString(numTwo);
+  if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
-    digitLengthComparison(numOne, numTwo);
-  const mulStr = (
+    digitLengthComparison(numOneCopy, numTwoCopy);
+  const tempStr = (
     bigNumberFormat(numOneInt + numOneDecimal) *
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
   const length = numOneDecimal.length + numTwoDecimal.length;
   const numInt =
-    mulStr.length - length === 0
+    tempStr.length - length === 0
       ? "0"
-      : mulStr.substring(0, mulStr.length - length);
-  const numDecimal = mulStr.substring(mulStr.length - length, mulStr.length);
+      : tempStr.substring(0, tempStr.length - length);
+  const numDecimal = tempStr.substring(tempStr.length - length, tempStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
 
 /* 除 */
-export const bigDiv = (
-  numOne: string = "",
-  numTwo: string = "",
-  digit: number = 0
-) => {
-  if (!checkNum(numOne) || !checkNum(numTwo)) {
+export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
+  const numOneCopy = transformString(numOne);
+  const numTwoCopy = transformString(numTwo);
+  if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
-    digitLengthComparison(numOne, numTwo);
+    digitLengthComparison(numOneCopy, numTwoCopy);
   /* 取余数 */
   const numRemainder =
     bigNumberFormat(numOneInt + numOneDecimal) %
@@ -228,17 +185,15 @@ export const bigDiv = (
 };
 
 /* 比较 */
-export const bigCompare = (
-  numOne: string = "",
-  numTwo: string = "",
-  calc: string = "==="
-) => {
-  if (!checkNum(numOne) || !checkNum(numTwo)) {
+export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
+  const numOneCopy = transformString(numOne);
+  const numTwoCopy = transformString(numTwo);
+  if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
-    digitLengthComparison(numOne, numTwo);
+    digitLengthComparison(numOneCopy, numTwoCopy);
   const compare: any = {
     "===": (a: BigInt, b: BigInt) => a === b,
     "<": (a: BigInt, b: BigInt) => a < b,
