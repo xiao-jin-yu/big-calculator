@@ -40,13 +40,30 @@ class StrCalc {
     return [l, r];
   };
 
+  initStr(str: string) {
+    const strSubstitution = str.replace(/\s+/g, "");
+    /* 负数转换展示形式 */
+    const strArr = strSubstitution.split("");
+    strArr.forEach((item: string, index: number) => {
+      if (item === "-" && ["+", "-", "*", "/"].includes(strArr[index - 1])) {
+        strArr[index - 1] = `${strArr[index - 1]}(0`;
+        let num = 1;
+        while (!["+", "-", "*", "/"].includes(strArr[index + num])) {
+          num += 1;
+        }
+        strArr[index + num - 1] = `${strArr[index + num - 1]})`;
+      }
+    });
+    const strCopy = strArr.join('')
+    return strCopy;
+  }
+
   parse = (
-    str: string,
+    expression: string,
     l = 0,
-    r = str.length - 1,
+    r = expression.length - 1,
     skipSearchTimeOrDivide = false
   ): any => {
-    const expression = str.replace("/\s*/g", "");
     let isNumber = true;
     let parenthesesDep = 0; // 记录小括号深度
     let firstTimeOrDivideOperator = null; // 记录遇到的第一个 * / 运算符
@@ -82,7 +99,7 @@ class StrCalc {
       if (i === l) {
         if (isNumber) {
           return {
-            type: "bigint",
+            type: "bigDecimal",
             value: String(expression.slice(l, r + 1)),
           };
         }
@@ -144,7 +161,7 @@ class StrCalc {
         return this.mul(recursion(ast.left), recursion(ast.right));
       } else if (ast.type === "/") {
         return this.div(recursion(ast.left), recursion(ast.right));
-      } else if (ast.type === "bigint") {
+      } else if (ast.type === "bigDecimal") {
         return ast.value;
       }
     };

@@ -1,6 +1,16 @@
 import Decimal from "decimal.js";
 import StrCalc from "./lib/StrCalc";
 
+/* 正则集合 */
+const regExpMap = {
+  /* 科学计数 */
+  FEreg: new RegExp(/\d(?:\.(\d*))?e([+-]\d+)/),
+  /* 正负整数，小数 */
+  numReg: new RegExp(/^(\-|\+)?\d+(\.\d+)?$/),
+  /* 全0匹配 */
+  zeroReg: new RegExp(/^[0]*$/),
+};
+
 const bigNumberFormat = (num: string = "") => {
   const numStr = BigInt(num);
   return numStr;
@@ -8,9 +18,7 @@ const bigNumberFormat = (num: string = "") => {
 
 const transformString = (num: any) => {
   let str = num;
-  /* 科学计数 */
-  const FEreg = /\d(?:\.(\d*))?e([+-]\d+)/;
-  if (FEreg.test(num)) {
+  if (regExpMap.FEreg.test(num)) {
     str = new Decimal(num).toFixed();
   }
   /* bigint */
@@ -28,9 +36,7 @@ const transformString = (num: any) => {
 
 /* 检测输入类型 */
 const checkNum = (num: string = "") => {
-  /* 正负整数，小数 */
-  const reg = /^(\-|\+)?\d+(\.\d+)?$/;
-  return reg.test(num);
+  return regExpMap.numReg.test(num);
 };
 
 /* 0填充 */
@@ -76,10 +82,10 @@ const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
 
 /* 输出结果 */
 const resultNum = (numInt: string, numDecimal: string, digit: number) => {
-  /* 全0匹配 */
-  const zeroReg = /^0+$/g;
   return `${numInt}${
-    zeroReg.test(numDecimal) ? "" : `.${numDecimal.substring(0, digit)}`
+    regExpMap.zeroReg.test(numDecimal)
+      ? ""
+      : `.${numDecimal.substring(0, digit)}`
   }`;
 };
 
@@ -99,10 +105,13 @@ export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
   const length = numOneDecimal.length;
-  const numInt =
-    tempStr.length - length === 0
+  let numInt =
+    tempStr.length - length <= 0
       ? "0"
       : tempStr.substring(0, tempStr.length - length);
+  if (numInt === "-") {
+    numInt = "-0";
+  }
   const numDecimal = tempStr.substring(tempStr.length - length, tempStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
@@ -111,6 +120,7 @@ export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
 export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
+
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
@@ -122,10 +132,13 @@ export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
   const length = numOneDecimal.length;
-  const numInt =
-    tempStr.length - length === 0
+  let numInt =
+    tempStr.length - length <= 0
       ? "0"
       : tempStr.substring(0, tempStr.length - length);
+  if (numInt === "-") {
+    numInt = "-0";
+  }
   const numDecimal = tempStr.substring(tempStr.length - length, tempStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
@@ -134,21 +147,32 @@ export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
 export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
+
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
     digitLengthComparison(numOneCopy, numTwoCopy);
+  if (
+    (regExpMap.zeroReg.test(numOneInt) &&
+      regExpMap.zeroReg.test(numOneDecimal)) ||
+    (regExpMap.zeroReg.test(numTwoInt) && regExpMap.zeroReg.test(numTwoDecimal))
+  ) {
+    return "0";
+  }
   const tempStr = (
     bigNumberFormat(numOneInt + numOneDecimal) *
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
   const length = numOneDecimal.length + numTwoDecimal.length;
-  const numInt =
-    tempStr.length - length === 0
+  let numInt =
+    tempStr.length - length <= 0
       ? "0"
       : tempStr.substring(0, tempStr.length - length);
+  if (numInt === "-") {
+    numInt = "-0";
+  }
   const numDecimal = tempStr.substring(tempStr.length - length, tempStr.length);
   return resultNum(numInt, numDecimal, digit);
 };
@@ -157,12 +181,20 @@ export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
 export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
+
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
     console.error("请输入正确数字字符串");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
     digitLengthComparison(numOneCopy, numTwoCopy);
+  if (
+    (regExpMap.zeroReg.test(numOneInt) &&
+      regExpMap.zeroReg.test(numOneDecimal)) ||
+    (regExpMap.zeroReg.test(numTwoInt) && regExpMap.zeroReg.test(numTwoDecimal))
+  ) {
+    return "0";
+  }
   /* 取余数 */
   const numRemainder =
     bigNumberFormat(numOneInt + numOneDecimal) %
@@ -232,7 +264,8 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
 /* 字符串模板计算 */
 export const bigCalc = (str: string) => {
   const strCalc = new StrCalc(bigAdd, bigSub, bigMul, bigDiv);
-  const ast = strCalc.parse(str);
+  const initStr = strCalc.initStr(str);
+  const ast = strCalc.parse(initStr);
   return strCalc.exec(ast);
 };
 
