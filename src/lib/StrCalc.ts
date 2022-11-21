@@ -20,19 +20,6 @@ class StrCalc {
     this.div = div;
   }
 
-  // 剔除两侧空格
-  removeBlank = (expression: string | any[], l: number, r: number) => {
-    while (expression[l] === " ") {
-      l++;
-    }
-
-    while (expression[r] === " ") {
-      r--;
-    }
-
-    return [l, r];
-  };
-
   // 剔除两侧小括号
   removeParentheses = (l: number, r: number) => {
     if (this.parenthesesPairPosition[l] === r) return [++l, --r];
@@ -69,7 +56,6 @@ class StrCalc {
     let firstTimeOrDivideOperator = null; // 记录遇到的第一个 * / 运算符
     let firstTimeOrDivideOperatorIdx = 0; // 记录遇到的第一个 * / 运算符的位置
 
-    [l, r] = this.removeBlank(expression, l, r);
     [l, r] = this.removeParentheses(l, r);
 
     for (let i = r; i >= l; i--) {

@@ -95,7 +95,7 @@ export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
   let numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确数字字符串");
+    console.error("请输入正确值");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -122,7 +122,7 @@ export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
   const numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确数字字符串");
+    console.error("请输入正确值");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -149,7 +149,7 @@ export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
   const numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确数字字符串");
+    console.error("请输入正确值");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -165,7 +165,7 @@ export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
     bigNumberFormat(numOneInt + numOneDecimal) *
     bigNumberFormat(numTwoInt + numTwoDecimal)
   ).toString();
-  const length = numOneDecimal.length + numTwoDecimal.length;
+  const length = numOneDecimal.length * 2;
   let numInt =
     tempStr.length - length <= 0
       ? "0"
@@ -183,7 +183,7 @@ export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
   const numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确数字字符串");
+    console.error("请输入正确值");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -218,7 +218,7 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确数字字符串");
+    console.error("请输入正确值");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
