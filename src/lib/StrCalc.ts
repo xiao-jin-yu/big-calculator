@@ -31,6 +31,13 @@ class StrCalc {
     const strSubstitution = str.replace(/\s+/g, "");
     /* 负数转换展示形式 */
     const strArr = strSubstitution.split("");
+    if (
+      strArr.filter((item) => item === "(").length !==
+      strArr.filter((item) => item === ")").length
+    ) {
+      console.error("请输入正确计算公式!");
+      return null;
+    }
     strArr.forEach((item: string, index: number) => {
       if (item === "-" && ["+", "-", "*", "/"].includes(strArr[index - 1])) {
         strArr[index - 1] = `${strArr[index - 1]}(0`;
@@ -40,8 +47,11 @@ class StrCalc {
         }
         strArr[index + num - 1] = `${strArr[index + num - 1]})`;
       }
+      if (item === "-" && ["("].includes(strArr[index - 1])) {
+        strArr[index - 1] = `${strArr[index - 1]}0`;
+      }
     });
-    const strCopy = strArr.join('')
+    const strCopy = strArr.join("");
     return strCopy;
   }
 

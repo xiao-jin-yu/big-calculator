@@ -95,7 +95,7 @@ export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
   let numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确值");
+    console.error("请输入正确值!");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -122,7 +122,7 @@ export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
   const numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确值");
+    console.error("请输入正确值!");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -149,7 +149,7 @@ export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
   const numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确值");
+    console.error("请输入正确值!");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -183,7 +183,7 @@ export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
   const numTwoCopy = transformString(numTwo);
 
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确值");
+    console.error("请输入正确值!");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -218,7 +218,7 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
-    console.error("请输入正确值");
+    console.error("请输入正确值!");
     return null;
   }
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
@@ -265,6 +265,7 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
 export const bigCalc = (str: string) => {
   const strCalc = new StrCalc(bigAdd, bigSub, bigMul, bigDiv);
   const initStr = strCalc.initStr(str);
+  if(!initStr) return null;
   const ast = strCalc.parse(initStr);
   return strCalc.exec(ast);
 };
