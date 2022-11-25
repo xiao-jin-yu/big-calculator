@@ -101,8 +101,8 @@ export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
     digitLengthComparison(numOneCopy, numTwoCopy);
   const tempStr = (
-    bigNumberFormat(numOneInt + numOneDecimal) +
-    bigNumberFormat(numTwoInt + numTwoDecimal)
+    bigNumberFormat(`${numOneInt}${numOneDecimal}`) +
+    bigNumberFormat(`${numTwoInt}${numTwoDecimal}`)
   ).toString();
   const length = numOneDecimal.length;
   let numInt =
@@ -128,8 +128,8 @@ export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
   const { numOneInt, numOneDecimal, numTwoInt, numTwoDecimal } =
     digitLengthComparison(numOneCopy, numTwoCopy);
   const tempStr = (
-    bigNumberFormat(numOneInt + numOneDecimal) -
-    bigNumberFormat(numTwoInt + numTwoDecimal)
+    bigNumberFormat(`${numOneInt}${numOneDecimal}`) -
+    bigNumberFormat(`${numTwoInt}${numTwoDecimal}`)
   ).toString();
   const length = numOneDecimal.length;
   let numInt =
@@ -162,8 +162,8 @@ export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
     return "0";
   }
   const tempStr = (
-    bigNumberFormat(numOneInt + numOneDecimal) *
-    bigNumberFormat(numTwoInt + numTwoDecimal)
+    bigNumberFormat(`${numOneInt}${numOneDecimal}`) *
+    bigNumberFormat(`${numTwoInt}${numTwoDecimal}`)
   ).toString();
   const length = numOneDecimal.length * 2;
   let numInt =
@@ -196,12 +196,12 @@ export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
     return "0";
   }
   /* 取余数 */
-  const numRemainder =
-    bigNumberFormat(numOneInt + numOneDecimal) %
-    bigNumberFormat(numTwoInt + numTwoDecimal);
-  const [floatInt, floatDecimal] = new Decimal(Number(numRemainder))
-    .div(new Decimal(Number(bigNumberFormat(numTwoInt + numTwoDecimal))))
-    .toNumber()
+  const numRemainder = (
+    bigNumberFormat(`${numOneInt}${numOneDecimal}`) %
+    bigNumberFormat(`${numTwoInt}${numTwoDecimal}`)
+  ).toString();
+  const [floatInt, floatDecimal] = new Decimal(numRemainder)
+    .div(new Decimal(`${numTwoInt}${numTwoDecimal}`))
     .toString()
     .split(".");
   const numDecimal = floatDecimal;
@@ -265,7 +265,7 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
 export const bigCalc = (str: string) => {
   const strCalc = new StrCalc(bigAdd, bigSub, bigMul, bigDiv);
   const initStr = strCalc.initStr(str);
-  if(!initStr) return null;
+  if (!initStr) return null;
   const ast = strCalc.parse(initStr);
   return strCalc.exec(ast);
 };
