@@ -20,19 +20,15 @@ yarn add max-big-decimal
 import MaxBigDecimal from "max-big-decimal";
 // 加
 const addNum = MaxBigDecimal.bigAdd("123.788", "78345.22123458");
-console.log('addNum: ', addNum);
 // -> 78469.00923458
 // 减
 const subNum = MaxBigDecimal.bigSub("4354.3", "0.14498832");
-console.log('subNum: ', subNum);
 // -> 4354.15501168
 // 乘
 const mulNum = MaxBigDecimal.bigMul("253365.458", "778552.7852");
-console.log('mulNum: ', mulNum);
 // -> 197258382999.37362160
 // 除
 const divNum = MaxBigDecimal.bigDiv("0.72045456", "3564566154345");
-console.log('divNum: ', divNum);
 // -> 2.0211563730464296
 # or
 // 按需引用
@@ -45,7 +41,7 @@ const subNum = bigSub("1.3", "0.1");
 const mulNum = bigMul("99984412349.222", "99989419.4566");
 // -> 9997383345508015560.67276520
 const divNum = bigDiv("0.45565213424511", "0.12121341234234");
-// -> 3.759090066355224
+// -> 3.7590900663552240
 ```
 ---
 
@@ -61,23 +57,23 @@ const subNum = bigSub("1.3", "0.1",4);
 ---
 ### 比较
 ```
-console.log(bigCompare("123123.999", "123123.999", "==="))
+const isResult_1 = bigCompare("123123.999", "123123.999", "===")
 // -> true
-console.log(bigCompare("123123.999", "123123.999", "<"))
+const isResult_2 = bigCompare("123123.999", "123123.999", "<")
 // -> false
-console.log(bigCompare("123123.999", "123123.999", ">"))
+const isResult_3 = bigCompare("123123.999", "123123.999", ">")
 // -> false
-console.log(bigCompare("123123.999", "123123.999", "<="))
+const isResult_4 = bigCompare("123123.999", "123123.999", "<=")
 // -> true
-console.log(bigCompare("123123.999", "123123.999", ">="))
+const isResult_5 = bigCompare("123123.999", "123123.999", ">=")
 // -> true
 ```
 
 ### 字符串模板计算
 ```
-console.log(bigCalc("123123.999 + 123123.999"))
+const calc_1 = bigCalc("123123.999 + 123123.999")
 // -> 246247.998
-console.log(bigCalc("123123.999 + 123123.999 - -25451.34 * 5415418.44 / 96342"))
-// -> 1676876.9652075481098587
+const calc_2 = bigCalc("123123.999 + 123123.999 - -25451.34 * 5415418.44 / 96342")
+// -> 1676876.9652075481098586
 ```
 
