@@ -4,7 +4,7 @@ export declare const mul: (numOne: any, numTwo: any, digit?: number) => string |
 export declare const div: (numOne: any, numTwo: any, digit?: number) => string | null;
 export declare const compare: (numOne: any, numTwo: any, calc?: string) => boolean | null;
 export declare const calc: (str: string) => any;
-declare const _default: {
+export declare const calculator: {
     add: (numOne: any, numTwo: any, digit?: number) => any;
     sub: (numOne: any, numTwo: any, digit?: number) => any;
     mul: (numOne: any, numTwo: any, digit?: number) => string | null;
@@ -12,4 +12,3 @@ declare const _default: {
     compare: (numOne: any, numTwo: any, calc?: string) => boolean | null;
     calc: (str: string) => any;
 };
-export default _default;

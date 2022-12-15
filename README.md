@@ -1,14 +1,14 @@
-# max-big-decimal
+# big-calculator
 
-max-big-decimal 是基于 ES2020 新增的基础数据类型 BigInt 及 [decimal.js](https://github.com/MikeMcl/decimal.js) 进行超大整数/小数计算简单工具函数。
+big-calculator 是基于 ES2020 新增的基础数据类型 BigInt 及 [decimal.js](https://github.com/MikeMcl/decimal.js) 进行超大整数/小数计算简单工具函数。
 ---
 
 ### 安装
 
 ```
-npm install max-big-decimal --save
+npm install big-calculator --save
 # or
-yarn add max-big-decimal
+yarn add big-calculator
 ```
 
 ---
@@ -17,7 +17,7 @@ yarn add max-big-decimal
 
 ```
 // 全量引用
-import MaxBigDecimal from "max-big-decimal";
+import MaxBigDecimal from "big-calculator";
 // 加
 const addNum = MaxBigDecimal.bigAdd("123.788", "78345.22123458");
 // -> 78469.00923458
@@ -32,7 +32,7 @@ const divNum = MaxBigDecimal.bigDiv("0.72045456", "3564566154345");
 // -> 2.0211563730464296
 # or
 // 按需引用
-import { bigAdd, bigSub, bigMul, bigDiv } from "max-big-decimal";
+import { bigAdd, bigSub, bigMul, bigDiv } from "big-calculator";
 
 const addNum = bigAdd("1115321211.9982054", "1398415615111.28");
 // -> 1399530936323.2782054

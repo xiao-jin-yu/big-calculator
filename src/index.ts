@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import StrCalc from "./lib/StrCalc";
+import StrCalc from "./lib/TreeCalc";
 
 /* 正则集合 */
 const regExpMap = {
@@ -82,15 +82,14 @@ const digitLengthComparison = (numOne: string = "", numTwo: string = "") => {
 
 /* 输出结果 */
 const resultNum = (numInt: string, numDecimal: string, digit: number) => {
-  return `${numInt}${
-    regExpMap.zeroReg.test(numDecimal)
-      ? ""
-      : `.${numDecimal.substring(0, digit)}`
-  }`;
+  return `${numInt}${regExpMap.zeroReg.test(numDecimal)
+    ? ""
+    : `.${numDecimal.substring(0, digit)}`
+    }`;
 };
 
 /* 加 */
-export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
+export const add = (numOne: any, numTwo: any, digit: number = 16): any => {
   let numOneCopy = transformString(numOne);
   let numTwoCopy = transformString(numTwo);
 
@@ -117,7 +116,7 @@ export const bigAdd = (numOne: any, numTwo: any, digit: number = 16): any => {
 };
 
 /* 减 */
-export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
+export const sub = (numOne: any, numTwo: any, digit: number = 16): any => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
 
@@ -144,7 +143,7 @@ export const bigSub = (numOne: any, numTwo: any, digit: number = 16): any => {
 };
 
 /* 乘 */
-export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
+export const mul = (numOne: any, numTwo: any, digit: number = 16) => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
 
@@ -178,7 +177,7 @@ export const bigMul = (numOne: any, numTwo: any, digit: number = 16) => {
 };
 
 /* 除 */
-export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
+export const div = (numOne: any, numTwo: any, digit: number = 16) => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
 
@@ -204,17 +203,17 @@ export const bigDiv = (numOne: any, numTwo: any, digit: number = 16) => {
     .div(new Decimal(`${numTwoInt}${numTwoDecimal}`))
     .toString()
     .split(".");
-  const numDecimal = floatDecimal;
+  const numDecimal = floatDecimal || '0';
   const numInt = (
     bigNumberFormat(numOneInt + numOneDecimal) /
-      bigNumberFormat(numTwoInt + numTwoDecimal) +
+    bigNumberFormat(numTwoInt + numTwoDecimal) +
     bigNumberFormat(floatInt)
   ).toString();
   return resultNum(numInt, numDecimal, digit);
 };
 
 /* 比较 */
-export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
+export const compare = (numOne: any, numTwo: any, calc: string = "===") => {
   const numOneCopy = transformString(numOne);
   const numTwoCopy = transformString(numTwo);
   if (!checkNum(numOneCopy) || !checkNum(numTwoCopy)) {
@@ -262,13 +261,12 @@ export const bigCompare = (numOne: any, numTwo: any, calc: string = "===") => {
 };
 
 /* 字符串模板计算 */
-export const bigCalc = (str: string) => {
-  const strCalc = new StrCalc(bigAdd, bigSub, bigMul, bigDiv);
-  const initStr = strCalc.initStr(str);
-  if (!initStr) return null;
-  const ast = strCalc.parse(initStr);
+export const calc = (str: string) => {
+  const strCalc = new StrCalc(add, sub, mul, div);
+  const init = strCalc.init(str);
+  if (!init) return null;
+  const ast = strCalc.parse(init);
   return strCalc.exec(ast);
 };
 
-const MaxBigDecimal = { bigAdd, bigSub, bigMul, bigDiv, bigCompare, bigCalc };
-export default MaxBigDecimal;
+export default { add, sub, mul, div, compare, calc };

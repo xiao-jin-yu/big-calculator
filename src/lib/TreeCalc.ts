@@ -1,4 +1,4 @@
-class StrCalc {
+class TreeCalc {
   stock: any = [];
   parenthesesPairPosition: any = {};
   add: any;
@@ -27,7 +27,7 @@ class StrCalc {
     return [l, r];
   };
 
-  initStr(str: string) {
+  init(str: string) {
     const strSubstitution = str.replace(/\s+/g, "");
     /* 负数转换展示形式 */
     const strArr = strSubstitution.split("");
@@ -166,4 +166,4 @@ class StrCalc {
   };
 }
 
-export default StrCalc;
+export default TreeCalc;

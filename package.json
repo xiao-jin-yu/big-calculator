@@ -1,6 +1,6 @@
 {
-  "name": "max-big-decimal",
-  "version": "0.0.1",
+  "name": "big-calculator",
+  "version": "1.0.0",
   "description": "",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xiao-jin-yu/max-big-decimal.git"
+    "url": "git+https://github.com/xiao-jin-yu/big-calculator.git"
   },
   "keywords": [
     "utils"
@@ -23,9 +23,9 @@
   "author": "xiao-jin-yu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xiao-jin-yu/max-big-decimal/issues"
+    "url": "https://github.com/xiao-jin-yu/big-calculator/issues"
   },
-  "homepage": "https://github.com/xiao-jin-yu/max-big-decimal#readme",
+  "homepage": "https://github.com/xiao-jin-yu/big-calculator#readme",
   "dependencies": {
     "decimal.js": "^10.4.2"
   },
